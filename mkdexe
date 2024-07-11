@@ -1,0 +1,76 @@
+#! /bin/bash
+
+die() {
+  echo "$1"
+  exit 1
+}
+
+optstring="N:C:P:E:"
+
+# set defaults
+CATEGORY=Game
+APP_PREF=org.dosemu2
+
+while getopts ${optstring} opt; do
+  case ${opt} in
+    N)
+      APP_NAME=${OPTARG}
+      ;;
+    C)
+      CATEGORY=${OPTARG}
+      ;;
+    P)
+      APP_PATH=${OPTARG}
+      ;;
+    E)
+      APP_EXE=${OPTARG}
+      ;;
+    ?)
+      exit 1
+      ;;
+  esac
+done
+[ -n "$APP_NAME" ] || die "app name missing, use -N"
+[ -n "$APP_PATH" ] || die "app path missing, use -P"
+[ -n "$APP_EXE" ] || die "app exe name missing, use -E"
+APP_DIR=`basename $APP_PATH`
+APPNAME=${APP_PREF}.${APP_NAME}
+
+subst_vars() {
+  sed -E \
+    -e "s/@APP_DIR[@]/$APP_DIR/g" \
+    -e "s/@APP_EXE[@]/$APP_EXE/g" \
+    -e "s/@ARCH[@]/$ARCH/g" \
+    -e "s/@APPNAME[@]/$APPNAME/g" \
+    -e "s/@CATEGORY[@]/$CATEGORY/g" \
+    $1 >$2
+}
+
+FLIST=`find AppDir -mindepth 1 -name '*.tmpl' -prune -o -print`
+[ -n "$FLIST" ] || die "AppDir not found"
+
+ARCH=`uname -m`
+RUNDIR="$XDG_RUNTIME_DIR/mkdexe"
+APPT="appimagetool-${ARCH}.AppImage"
+APPTOOL="$RUNDIR/$APPT"
+URL="https://github.com/AppImage/appimagetool/releases/download/continuous/$APPT"
+[ -d "$RUNDIR" ] || mkdir "$RUNDIR"
+[ -f "$APPTOOL" ] || wget -O "$APPTOOL" $URL
+chmod +x "$APPTOOL"
+TMPD=`mktemp -d /tmp/mkdexe.XXXXXX`
+[ -n "$TMPD" ] || die "failed to create tmp dir"
+AD="$TMPD/AppDir"
+mkdir "$AD"
+[ -d "$AD" ] || die "failed to create AppDir"
+echo "Created $AD"
+cp $FLIST "$AD"
+subst_vars AppDir/AppRun.env.tmpl "$AD/AppRun.env"
+subst_vars AppDir/desktop.tmpl "$AD/${APPNAME}.desktop"
+
+# copy game
+cp -r "$APP_PATH" "$AD"
+
+# now run appimagetool
+export ARCH
+$APPTOOL "$AD"
+rm -rf "$TMPD"

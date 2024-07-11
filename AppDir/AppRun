@@ -1,0 +1,4 @@
+#! /bin/sh
+
+source $APPDIR/AppRun.env
+dosemu -no-priv-sep $DOSEMU2_EXEC_ARGS
