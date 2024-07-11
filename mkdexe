@@ -33,6 +33,7 @@ done
 [ -n "$APP_NAME" ] || die "app name missing, use -N"
 [ -n "$APP_PATH" ] || die "app path missing, use -P"
 [ -n "$APP_EXE" ] || die "app exe name missing, use -E"
+[ -f "$APP_PATH/$APP_EXE" ] || die "$APP_PATH/$APP_EXE does not exist"
 APP_DIR=`basename $APP_PATH`
 APPNAME=${APP_PREF}.${APP_NAME}
 
