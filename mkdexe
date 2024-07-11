@@ -56,8 +56,8 @@ APPT="appimagetool-${ARCH}.AppImage"
 APPTOOL="$RUNDIR/$APPT"
 URL="https://github.com/AppImage/appimagetool/releases/download/continuous/$APPT"
 [ -d "$RUNDIR" ] || mkdir "$RUNDIR"
-[ -f "$APPTOOL" ] || wget -O "$APPTOOL" $URL
-chmod +x "$APPTOOL"
+[ -f "$APPTOOL" ] || wget -O "$APPTOOL" $URL || die "appimagetool download failed"
+[ -x "$APPTOOL" ] || chmod +x "$APPTOOL"
 TMPD=`mktemp -d /tmp/mkdexe.XXXXXX`
 [ -n "$TMPD" ] || die "failed to create tmp dir"
 AD="$TMPD/AppDir"
