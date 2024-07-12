@@ -41,6 +41,7 @@ subst_vars() {
   sed -E \
     -e "s/@APP_DIR[@]/$APP_DIR/g" \
     -e "s/@APP_EXE[@]/$APP_EXE/g" \
+    -e "s/@APP_NAME[@]/$APP_NAME/g" \
     -e "s/@ARCH[@]/$ARCH/g" \
     -e "s/@APPNAME[@]/$APPNAME/g" \
     -e "s/@CATEGORY[@]/$CATEGORY/g" \

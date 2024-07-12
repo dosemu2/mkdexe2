@@ -1,4 +1,21 @@
 #! /bin/sh
 
+die() {
+  echo "$1"
+  exit 1
+}
+
 source $APPDIR/AppRun.env
-dosemu -no-priv-sep $DOSEMU2_EXEC_ARGS
+APP_TMPDIR=/tmp/dosemu2apps/$APP_NAME/app
+mkdir -p $APP_TMPDIR
+DR_C=/tmp/dosemu2apps/$APP_NAME/drive_c
+mkdir -p $DR_C/tmp
+APP_LOCALDIR=~/.local/share/dosemu2apps/$APP_NAME
+mkdir -p $APP_LOCALDIR
+FUSE_LOCALDIR=~/.fuse_overlayfs/dosemu2apps/$APP_NAME
+mkdir -p $FUSE_LOCALDIR
+fuse-overlayfs -o lowerdir=$APP_DIR -o upperdir=$APP_LOCALDIR \
+  -o workdir=$FUSE_LOCALDIR $APP_TMPDIR || die "fuse-overlayfs failed"
+dosemu -no-priv-sep -n --Fdrive_c $DR_C $APP_TMPDIR/$APP_EXE
+fusermount -u $APP_TMPDIR
+rm -rf $FUSE_LOCALDIR
