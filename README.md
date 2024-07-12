@@ -12,3 +12,7 @@ script to package DOS binaries for dosemu1.
 This creates the file named
 `org.dosemu2.Arcade_Volleyboll-x86_64.AppImage`
 which you can run under linux to play the Acrade Volleyball game.
+
+## requirements
+
+`fuse-overlayfs` must be installed.
