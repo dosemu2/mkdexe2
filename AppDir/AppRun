@@ -17,6 +17,6 @@ FUSE_LOCALDIR=~/.fuse_overlayfs/dosemu2apps/$APP_NAME
 mkdir -p $FUSE_LOCALDIR
 fuse-overlayfs -o lowerdir=$APP_DIR -o upperdir=$APP_LOCALDIR \
   -o workdir=$FUSE_LOCALDIR $APP_TMPDIR || die "fuse-overlayfs failed"
-dosemu -no-priv-sep --Flocal_dir $APP_TMP $APP_TMPDIR/$APP_EXE
+dosemu -no-priv-sep --Flocal_dir $APPDIR --Fdrive_c $DR_C $APP_TMPDIR/$APP_EXE
 fusermount -u $APP_TMPDIR
 rm -rf $FUSE_LOCALDIR

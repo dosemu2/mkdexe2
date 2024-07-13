@@ -12,17 +12,21 @@ if [ "$#" -lt "6" ]; then
   echo
   echo "extra_options are:"
   echo "  -C <app_category>  (by default \"Game\")"
+  echo "  -R <dosemurc_file> (use this file as dosemu2 config)"
+  echo "  -r                 (same as -R, but takes ~/.dosemu/dosemurc)"
   echo
   echo "Example:"
   echo "./mkdexe -N Wolf3d -P ~/dos/games/wolf -E wolf3d.exe"
+  echo "  In this example dosemurc is not specified, which means default config."
   exit 0
 fi
 
-optstring="N:C:P:E:"
+optstring="N:C:P:E:R:r"
 
 # set defaults
 CATEGORY=Game
 APP_PREF=org.dosemu2
+DOSEMURC=dosemurc
 
 while getopts ${optstring} opt; do
   case ${opt} in
@@ -38,6 +42,12 @@ while getopts ${optstring} opt; do
     E)
       APP_EXE=${OPTARG}
       ;;
+    R)
+      RC=${OPTARG}
+      ;;
+    r)
+      RC="~/.dosemu/$DOSEMURC"
+      ;;
     ?)
       exit 1
       ;;
@@ -46,7 +56,8 @@ done
 [ -n "$APP_NAME" ] || die "app name missing, use -N"
 [ -n "$APP_PATH" ] || die "app path missing, use -P"
 [ -n "$APP_EXE" ] || die "app exe name missing, use -E"
-[ -f "$APP_PATH/$APP_EXE" ] || die "$APP_PATH/$APP_EXE does not exist"
+[ -r "$APP_PATH/$APP_EXE" ] || die "$APP_PATH/$APP_EXE does not exist"
+[ -z "$RC" -o -r "$RC" ] || die "$RC missing"
 APP_DIR=`basename $APP_PATH`
 APPNAME=${APP_PREF}.${APP_NAME}
 
@@ -81,7 +92,7 @@ echo "Created $AD"
 cp $FLIST "$AD"
 subst_vars AppDir/AppRun.env.tmpl "$AD/AppRun.env"
 subst_vars AppDir/desktop.tmpl "$AD/${APPNAME}.desktop"
-
+[ -z "$RC" ] || cp $RC $AD/$DOSEMURC
 # copy game
 cp -r "$APP_PATH" "$AD"
 
