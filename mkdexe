@@ -5,6 +5,19 @@ die() {
   exit 1
 }
 
+if [ "$#" -lt "6" ]; then
+  echo
+  echo "Usage: mkdexe -N <app_name> -P <app_path> -E <app_exe> " \
+    "[<extra_options>]"
+  echo
+  echo "extra_options are:"
+  echo "  -C <app_category>  (by default \"Game\")"
+  echo
+  echo "Example:"
+  echo "./mkdexe -N Wolf3d -P ~/dos/games/wolf -E wolf3d.exe"
+  exit 0
+fi
+
 optstring="N:C:P:E:"
 
 # set defaults
