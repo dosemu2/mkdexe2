@@ -15,8 +15,42 @@ APP_LOCALDIR=~/.local/state/dosemu2apps/$APP_NAME
 mkdir -p $APP_LOCALDIR
 FUSE_LOCALDIR=~/.fuse_overlayfs/dosemu2apps/$APP_NAME
 mkdir -p $FUSE_LOCALDIR
+mnt() {
 fuse-overlayfs -o lowerdir=$APP_DIR -o upperdir=$APP_LOCALDIR \
-  -o workdir=$FUSE_LOCALDIR $APP_TMPDIR || die "fuse-overlayfs failed"
-dosemu -no-priv-sep --Flocal_dir $APPDIR --Fdrive_c $DR_C $APP_TMPDIR/$APP_EXE
-fusermount -u $APP_TMPDIR
-rm -rf $FUSE_LOCALDIR
+  -o workdir=$FUSE_LOCALDIR $APP_TMPDIR
+}
+um() {
+  fusermount -u $APP_TMPDIR
+}
+if ! mnt; then
+  # if it left mounted from last start, try unmount first
+  um
+  mnt || die "fuse-overlayfs failed"
+fi
+cln() {
+  um
+  rm -rf $FUSE_LOCALDIR
+}
+
+die2() {
+  cln
+  die $*
+}
+
+if which dosemu >/dev/null 2>&1; then
+  dosemu -no-priv-sep --Flocal_dir $APPDIR --Fdrive_c $DR_C \
+    $APP_TMPDIR/$APP_EXE
+else
+  flatpak remote-add --if-not-exists --no-gpg-verify --user \
+    dosemu2 https://dosemu2.github.io/dosemu2/flatpak/repo || \
+    die2 "unable to add flatpak remote"
+  echo "gpg-verify=false" >> ~/.local/share/flatpak/repo/config
+  echo "gpg-verify-summary=false" >> ~/.local/share/flatpak/repo/config
+  flatpak install -y --user dosemu2 io.github.dosemu2.dosemu2 || \
+    die2 "unable to install dosemu2 flatpak"
+  flatpak run --user io.github.dosemu2.dosemu2 --Flocal_dir $APPDIR \
+    --Fdrive_c $DR_C $APP_TMPDIR/$APP_EXE
+fi
+
+# cleanup
+cln
