@@ -5,8 +5,10 @@ die() {
   exit 1
 }
 
+[ -n "$XDG_RUNTIME_DIR" ] || die "XDG_RUNTIME_DIR not set"
+
 source $APPDIR/AppRun.env
-APP_TMP=/tmp/dosemu2apps/$APP_NAME
+APP_TMP=$XDG_RUNTIME_DIR/dosemu2apps/$APP_NAME
 APP_TMPDIR=$APP_TMP/app
 mkdir -p $APP_TMPDIR
 DR_C=$APP_TMP/drive_c
