@@ -22,7 +22,10 @@ fuse-overlayfs -o lowerdir=$APP_DIR -o upperdir=$APP_LOCALDIR \
   -o workdir=$FUSE_LOCALDIR $APP_TMPDIR
 }
 um() {
-  fusermount -u $APP_TMPDIR
+  FM=`which fusermount3 2>/dev/null`
+  [ -n "$FM" ] || FM=`which fusermount 2>/dev/null`
+  [ -n "$FM" ] || die "fusermount not found"
+  $FM -u $APP_TMPDIR
 }
 if ! mnt; then
   # if it left mounted from last start, try unmount first
