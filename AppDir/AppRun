@@ -44,7 +44,7 @@ die2() {
 
 if which dosemu >/dev/null 2>&1; then
   dosemu -no-priv-sep --Flocal_dir $APPDIR --Fdrive_c $DR_C \
-    $APP_TMPDIR/$APP_EXE
+    $APP_TMPDIR/$APP_EXE $*
 else
   flatpak remote-add --if-not-exists --no-gpg-verify --user \
     dosemu2 https://dosemu2.github.io/dosemu2/flatpak/repo || \
@@ -54,7 +54,7 @@ else
   flatpak install -y --user dosemu2 io.github.dosemu2.dosemu2 || \
     die2 "unable to install dosemu2 flatpak"
   flatpak run --user io.github.dosemu2.dosemu2 --Flocal_dir $APPDIR \
-    --Fdrive_c $DR_C $APP_TMPDIR/$APP_EXE
+    --Fdrive_c $DR_C $APP_TMPDIR/$APP_EXE $*
 fi
 
 # cleanup
