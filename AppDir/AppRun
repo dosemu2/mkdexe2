@@ -8,6 +8,15 @@ die() {
 [ -n "$XDG_RUNTIME_DIR" ] || XDG_RUNTIME_DIR=/tmp
 
 source $APPDIR/AppRun.env
+
+case "$1" in
+  --ls)
+    shift
+    ls $* $APP_DIR
+    exit $?
+    ;;
+esac
+
 APP_TMP=$XDG_RUNTIME_DIR/dosemu2apps/$APP_NAME
 APP_TMPDIR=$APP_TMP/app
 mkdir -p $APP_TMPDIR
