@@ -21,7 +21,7 @@ if [ "$#" -lt "6" ]; then
   exit 0
 fi
 
-optstring="N:C:P:E:R:r"
+optstring="N:C:P:E:R:rf"
 
 # set defaults
 CATEGORY=Game
@@ -47,6 +47,9 @@ while getopts ${optstring} opt; do
       ;;
     r)
       RC="~/.dosemu/$DOSEMURC"
+      ;;
+    f)
+      REFRESH=1
       ;;
     ?)
       exit 1
@@ -81,6 +84,7 @@ APPT="appimagetool-${ARCH}.AppImage"
 APPTOOL="$RUNDIR/$APPT"
 URL="https://github.com/AppImage/appimagetool/releases/download/continuous/$APPT"
 [ -d "$RUNDIR" ] || mkdir "$RUNDIR"
+[ -z "$REFRESH" ] || rm -f $APPTOOL
 [ -f "$APPTOOL" ] || wget -O "$APPTOOL" $URL || die "appimagetool download failed"
 [ -x "$APPTOOL" ] || chmod +x "$APPTOOL"
 TMPD=`mktemp -d /tmp/mkdexe.XXXXXX`
