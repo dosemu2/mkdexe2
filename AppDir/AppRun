@@ -9,13 +9,24 @@ die() {
 
 source $APPDIR/AppRun.env
 
-case "$1" in
-  --ls)
-    shift
-    ls $* $APP_DIR
-    exit $?
-    ;;
-esac
+while [ $# -gt 0 ] ; do
+  case "$1" in
+    --ls)
+      shift
+      ls $* $APP_DIR
+      exit $?
+      ;;
+    --keep)
+      shift
+      KEEP=1
+      ;;
+    --debug)
+      shift
+      FU_OPTS="-d"
+      DEBUG=1
+      ;;
+  esac
+done
 
 APP_TMP=$XDG_RUNTIME_DIR/dosemu2apps/$APP_NAME
 APP_TMPDIR=$APP_TMP/app
@@ -28,7 +39,8 @@ FUSE_LOCALDIR=~/.fuse_overlayfs/dosemu2apps/$APP_NAME
 mkdir -p $FUSE_LOCALDIR
 mnt() {
   fuse-overlayfs -o lowerdir=$APP_DIR -o upperdir=$APP_LOCALDIR \
-    -o workdir=$FUSE_LOCALDIR $APP_TMPDIR
+    -o workdir=$FUSE_LOCALDIR $FU_OPTS $APP_TMPDIR
+  [ -z "$DEBUG" ] || exit 0
 }
 um() {
   FM=`which fusermount3 2>/dev/null`
@@ -50,6 +62,11 @@ die2() {
   cln
   die $*
 }
+
+if [ -n "$KEEP" ]; then
+    echo "Mounted to $APP_TMPDIR"
+    exit 0
+fi
 
 if which dosemu >/dev/null 2>&1; then
   dosemu -no-priv-sep --Flocal_dir $APPDIR --Fdrive_c $DR_C \
