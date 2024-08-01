@@ -21,7 +21,7 @@ if [ "$#" -lt "6" ]; then
   exit 0
 fi
 
-optstring="N:C:P:E:R:rf"
+optstring="N:C:P:E:R:rfx:"
 
 # set defaults
 CATEGORY=Game
@@ -50,6 +50,9 @@ while getopts ${optstring} opt; do
       ;;
     f)
       REFRESH=1
+      ;;
+    x)
+      AI_ARGS="$AI_ARGS ${OPTARG}"
       ;;
     ?)
       exit 1
@@ -102,5 +105,5 @@ cp -r "$APP_PATH" "$AD"
 
 # now run appimagetool
 export ARCH
-$APPTOOL "$AD"
+$APPTOOL $AI_ARGS "$AD"
 rm -rf "$TMPD"
