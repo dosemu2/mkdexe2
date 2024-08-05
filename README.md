@@ -15,4 +15,4 @@ which you can run under linux to play the Acrade Volleyball game.
 
 ## requirements
 
-`fuse-overlayfs` must be installed.
+[dosemu2](https://github.com/dosemu2/dosemu2) must be installed.
