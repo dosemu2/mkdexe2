@@ -38,7 +38,7 @@ mkdir -p $APP_LOCALDIR
 FUSE_LOCALDIR=~/.fuse_overlayfs/dosemu2apps/$APP_NAME
 mkdir -p $FUSE_LOCALDIR
 mnt() {
-  fuse-overlayfs -o lowerdir=$APP_DIR -o upperdir=$APP_LOCALDIR \
+  $APPDIR/fuse-overlayfs -o lowerdir=$APP_DIR -o upperdir=$APP_LOCALDIR \
     -o workdir=$FUSE_LOCALDIR $FU_OPTS $APP_TMPDIR || \
         die "fuse-overlayfs failed"
   [ -z "$DEBUG" ] || exit 0
