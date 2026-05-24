@@ -35,8 +35,6 @@ done
 APP_TMP=$XDG_RUNTIME_DIR/dosemu2apps/$APP_NAME
 APP_TMPDIR=$APP_TMP/app
 mkdir -p $APP_TMPDIR
-DR_C=$APP_TMP/drive_c
-mkdir -p $DR_C/tmp
 APP_LOCALDIR=~/.local/state/dosemu2apps/$APP_NAME
 mkdir -p $APP_LOCALDIR
 FUSE_LOCALDIR=~/.fuse_overlayfs/dosemu2apps/$APP_NAME
@@ -76,8 +74,7 @@ if [ -n "$KEEP" ]; then
 fi
 
 if which dosemu >/dev/null 2>&1; then
-  dosemu --Flocal_dir $APPDIR --Fdrive_c $DR_C \
-    $APP_TMPDIR/$APP_EXE $*
+  dosemu --Flocal_dir $APPDIR $APP_TMPDIR/$APP_EXE $*
 else
   flatpak remote-add --if-not-exists --no-gpg-verify --user \
     dosemu2 https://dosemu2.github.io/dosemu2/flatpak/repo || \
@@ -87,7 +84,7 @@ else
   flatpak install -y --user dosemu2 io.github.dosemu2.dosemu2 || \
     die2 "unable to install dosemu2 flatpak"
   flatpak run --user io.github.dosemu2.dosemu2 --Flocal_dir $APPDIR \
-    --Fdrive_c $DR_C $APP_TMPDIR/$APP_EXE $*
+    $APP_TMPDIR/$APP_EXE $*
 fi
 
 # cleanup
