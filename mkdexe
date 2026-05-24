@@ -7,13 +7,14 @@ die() {
 
 if [ "$#" -lt "6" ]; then
   echo
-  echo "Usage: mkdexe -N <app_name> -P <app_path> -E <app_exe> " \
+  echo "Usage: mkdexe -N <app_name> -P <app_path> -E <app_exe>" \
     "[<extra_options>]"
   echo
   echo "extra_options are:"
-  echo "  -C <app_category>  (by default \"Game\")"
-  echo "  -R <dosemurc_file> (use this file as dosemu2 config)"
-  echo "  -r                 (same as -R, but takes ~/.dosemu/dosemurc)"
+  echo "  -C <app_category>  category (by default \"Game\")"
+  echo "  -R <dosemurc_file> use custom config file"
+  echo "  -r                 same as -R, but takes ~/.dosemu/dosemurc"
+  echo "  -e <emu_name>      use another emulator (eg. dosbox)"
   echo
   echo "Example:"
   echo "./mkdexe -N Wolf3d -P ~/dos/games/wolf -E wolf3d.exe"
@@ -21,12 +22,13 @@ if [ "$#" -lt "6" ]; then
   exit 0
 fi
 
-optstring="N:C:P:E:R:rfx:k"
+optstring="N:C:P:E:R:rfx:ke:"
 
 # set defaults
 CATEGORY=Game
 APP_PREF=org.dosemu2
 DOSEMURC=dosemurc
+EMU=dosemu
 
 while getopts ${optstring} opt; do
   case ${opt} in
@@ -47,6 +49,9 @@ while getopts ${optstring} opt; do
       ;;
     r)
       RC="$HOME/.dosemu/$DOSEMURC"
+      ;;
+    e)
+      EMU=${OPTARG}
       ;;
     f)
       REFRESH=1
@@ -81,6 +86,7 @@ subst_vars() {
     -e "s/@APPNAME[@]/$APPNAME/g" \
     -e "s/@CATEGORY[@]/$CATEGORY/g" \
     -e "s/@NEWENV[@]/$NEWENV/g" \
+    -e "s/@EMU[@]/$EMU/g" \
     $1 >$2
 }
 

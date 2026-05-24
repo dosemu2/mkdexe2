@@ -26,6 +26,11 @@ while [ $# -gt 0 ] ; do
       FU_OPTS="-d"
       DEBUG=1
       ;;
+    --emu)
+      shift
+      EMU="$1"
+      shift
+      ;;
     *)
       break
       ;;
@@ -77,8 +82,8 @@ if [ "$NEWENV" = "1" ]; then
     ARGS="--Flocal_dir $APPDIR"
 fi
 
-if which dosemu >/dev/null 2>&1; then
-  dosemu $ARGS $APP_TMPDIR/$APP_EXE $*
+if which "$EMU" >/dev/null 2>&1; then
+  $EMU $ARGS $APP_TMPDIR/$APP_EXE $*
 else
   flatpak remote-add --if-not-exists --no-gpg-verify --user \
     dosemu2 https://dosemu2.github.io/dosemu2/flatpak/repo || \

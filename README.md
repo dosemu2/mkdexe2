@@ -1,14 +1,20 @@
 # mkdexe2
 
-`mkdexe2` is a script to bundle DOS executables for dosemu2.
+`mkdexe2` is a script to bundle DOS executables for emulators like
+dosemu2 or dosbox.
 
 ## usage
 
-`./mkdexe -N Arcade_Volleyboll -P /home/$USER/dos/games/av -E av.exe`
+`./mkdexe -N Wolf3d -P ~/dos/games/wolf -E wolf3d.exe`
 
 This creates the file named
-`org.dosemu2.Arcade_Volleyboll-x86_64.AppImage`
-which you can run under linux to play the Acrade Volleyball game.
+`org.dosemu2.Wolf3d-x86_64.AppImage`
+which you can run under linux to play the Wolf3d game.
+dosemu2 is used by default.
+
+`./mkdexe -N Wolf3d -P ~/dos/games/wolf -E wolf3d.exe -e dosbox`
+
+Same, but will use dosbox.
 
 ## requirements
 
