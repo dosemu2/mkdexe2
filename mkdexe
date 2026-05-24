@@ -21,7 +21,7 @@ if [ "$#" -lt "6" ]; then
   exit 0
 fi
 
-optstring="N:C:P:E:R:rfx:"
+optstring="N:C:P:E:R:rfx:k"
 
 # set defaults
 CATEGORY=Game
@@ -53,6 +53,9 @@ while getopts ${optstring} opt; do
       ;;
     x)
       AI_ARGS="$AI_ARGS ${OPTARG}"
+      ;;
+    k)
+      KEEP=1
       ;;
     ?)
       exit 1
@@ -106,4 +109,8 @@ cp -r "$APP_PATH" "$AD"
 # now run appimagetool
 export ARCH
 $APPTOOL $AI_ARGS "$AD"
-rm -rf "$TMPD"
+if [ -z "$KEEP" ]; then
+  rm -rf "$TMPD"
+else
+  echo "tmp dir is $TMPD"
+fi
