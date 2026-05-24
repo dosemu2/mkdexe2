@@ -13,7 +13,8 @@ while [ $# -gt 0 ] ; do
   case "$1" in
     --ls)
       shift
-      ls $* $APP_DIR
+      echo ls -ARl $* $APPDIR
+      ls -ARl $* $APPDIR
       exit $?
       ;;
     --keep)
