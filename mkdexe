@@ -46,7 +46,7 @@ while getopts ${optstring} opt; do
       RC=${OPTARG}
       ;;
     r)
-      RC="~/.dosemu/$DOSEMURC"
+      RC="$HOME/.dosemu/$DOSEMURC"
       ;;
     f)
       REFRESH=1
