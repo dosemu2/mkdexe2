@@ -69,6 +69,8 @@ done
 [ -z "$RC" -o -r "$RC" ] || die "$RC missing"
 APP_DIR=`basename $APP_PATH`
 APPNAME=${APP_PREF}.${APP_NAME}
+NEWENV=0
+[ -z "$RC" ] || NEWENV=1
 
 subst_vars() {
   sed -E \
@@ -78,6 +80,7 @@ subst_vars() {
     -e "s/@ARCH[@]/$ARCH/g" \
     -e "s/@APPNAME[@]/$APPNAME/g" \
     -e "s/@CATEGORY[@]/$CATEGORY/g" \
+    -e "s/@NEWENV[@]/$NEWENV/g" \
     $1 >$2
 }
 
