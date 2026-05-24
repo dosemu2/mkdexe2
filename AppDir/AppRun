@@ -76,7 +76,7 @@ if [ -n "$KEEP" ]; then
 fi
 
 if which dosemu >/dev/null 2>&1; then
-  dosemu -no-priv-sep --Flocal_dir $APPDIR --Fdrive_c $DR_C \
+  dosemu --Flocal_dir $APPDIR --Fdrive_c $DR_C \
     $APP_TMPDIR/$APP_EXE $*
 else
   flatpak remote-add --if-not-exists --no-gpg-verify --user \
