@@ -7,7 +7,7 @@ die() {
 
 [ -n "$XDG_RUNTIME_DIR" ] || XDG_RUNTIME_DIR=/tmp
 
-source $APPDIR/AppRun.env
+. $APPDIR/AppRun.env
 
 while [ $# -gt 0 ] ; do
   case "$1" in
