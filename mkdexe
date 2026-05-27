@@ -22,7 +22,7 @@ if [ "$#" -lt "6" ]; then
   exit 0
 fi
 
-optstring="N:C:P:E:R:rfx:ke:"
+optstring="N:C:P:E:R:rfx:ke:a:"
 
 # set defaults
 CATEGORY=Game
@@ -59,6 +59,9 @@ while getopts ${optstring} opt; do
     x)
       AI_ARGS="$AI_ARGS ${OPTARG}"
       ;;
+    a)
+      AppDir=${OPTARG}/AppDir
+      ;;
     k)
       KEEP=1
       ;;
@@ -72,6 +75,19 @@ done
 [ -n "$APP_EXE" ] || die "app exe name missing, use -E"
 [ -r "$APP_PATH/$APP_EXE" ] || die "$APP_PATH/$APP_EXE does not exist"
 [ -z "$RC" -o -r "$RC" ] || die "$RC missing"
+dir=`dirname ${0}`
+name=`basename ${0}`
+prefix=${dir%bin}
+if [ -z "${AppDir}" ]; then
+  AppDir=$dir/AppDir
+  [ -d "${AppDir}" ] || AppDir=
+fi
+if [ -z "${AppDir}" ]; then
+  AppDir=$prefix/share/$name/AppDir
+  [ -d "${AppDir}" ] || AppDir=
+fi
+[ -n "${AppDir}" ] || die "AppDir not found"
+[ -d "${AppDir}" ] || die "${AppDir} not found"
 APP_DIR=`basename $APP_PATH`
 APPNAME=${APP_PREF}.${APP_NAME}
 NEWENV=0
@@ -90,8 +106,8 @@ subst_vars() {
     $1 >$2
 }
 
-FLIST=`find AppDir -mindepth 1 -name '*.tmpl' -prune -o -print`
-[ -n "$FLIST" ] || die "AppDir not found"
+FLIST=`find ${AppDir} -mindepth 1 -name '*.tmpl' -prune -o -print`
+[ -n "$FLIST" ] || die "${AppDir} not found"
 
 ARCH=`uname -m`
 RUNDIR="$XDG_RUNTIME_DIR/mkdexe"
@@ -109,8 +125,8 @@ mkdir "$AD"
 [ -d "$AD" ] || die "failed to create AppDir"
 echo "Created $AD"
 cp $FLIST "$AD"
-subst_vars AppDir/AppRun.env.tmpl "$AD/AppRun.env"
-subst_vars AppDir/desktop.tmpl "$AD/${APPNAME}.desktop"
+subst_vars ${AppDir}/AppRun.env.tmpl "$AD/AppRun.env"
+subst_vars ${AppDir}/desktop.tmpl "$AD/${APPNAME}.desktop"
 [ -z "$RC" ] || cp $RC $AD/$DOSEMURC
 # copy game
 cp -r "$APP_PATH" "$AD"
