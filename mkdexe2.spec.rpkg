@@ -1,0 +1,43 @@
+#
+# spec file for package mkdexe2
+#
+
+Name: {{{ git_dir_name }}}
+Version: {{{ git_dir_version }}}
+Release: 1%{?dist}
+Summary: script for bundling DOS executables
+BuildArch: noarch
+Group: System/Emulator
+
+License: GPLv3+
+URL: http://www.github.com/dosemu2/mkdexe2
+VCS: {{{ git_dir_vcs }}}
+Source0: {{{ git_dir_archive }}}
+
+BuildRequires: make
+Requires: fuse-overlayfs
+Requires: fuse3
+
+%define debug_package %{nil}
+
+%description
+mkdexe is a script to bundle DOS executables for emulators like
+dosemu2 or dosbox.
+
+%prep
+{{{ git_dir_setup_macro }}}
+
+%build
+
+%check
+
+%install
+make DESTDIR=%{buildroot} prefix=%{_prefix} install
+
+%files
+%defattr(-,root,root)
+%{_datadir}/mkdexe
+%{_bindir}/mkdexe
+
+%changelog
+{{{ git_dir_changelog }}}
