@@ -25,6 +25,13 @@ $APP_EXE
 	EOF
 }
 
+uninstall() {
+  [ -d "$DRV_C/apps/$DIR" ] || die "$DRV_C/apps/$DIR does not exist"
+  [ -f "$DRV_C/links/${DIR}.bat" ] || die "$DRV_C/links/${DIR}.bat does not exist"
+  rm -r $DRV_C/apps/$DIR
+  rm -f $DRV_C/links/${DIR}.bat
+}
+
 while [ $# -gt 0 ] ; do
   case "$1" in
     --ls)
@@ -57,6 +64,11 @@ while [ $# -gt 0 ] ; do
     --install)
       shift
       install
+      exit $?
+      ;;
+    --uninstall)
+      shift
+      uninstall
       exit $?
       ;;
     *)
