@@ -15,6 +15,13 @@ while [ $# -gt 0 ] ; do
       shift
       echo ls -ARl $* $APPDIR
       ls -ARl $* $APPDIR
+      shift
+      exit $?
+      ;;
+    --cat)
+      shift
+      cat $APPDIR/$1
+      shift
       exit $?
       ;;
     --keep)
