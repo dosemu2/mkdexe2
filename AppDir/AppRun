@@ -9,6 +9,22 @@ die() {
 
 . $APPDIR/AppRun.env
 
+DRV_C=$HOME/.dosemu/drive_c
+DIR=`basename ${APP_DIR}`
+
+install() {
+  [ -d "$DRV_C/apps" ] || die "$DRV_C/apps does not exist"
+  [ -d "$DRV_C/links" ] || die "$DRV_C/links does not exist"
+  cp -r ${APP_DIR} $DRV_C/apps
+  cat <<-EOF >$DRV_C/links/${DIR}.bat
+@echo off
+echo Starting ${APP_NAME}...
+C:
+cd \\apps\\$DIR
+$APP_EXE
+	EOF
+}
+
 while [ $# -gt 0 ] ; do
   case "$1" in
     --ls)
@@ -37,6 +53,11 @@ while [ $# -gt 0 ] ; do
       shift
       EMU="$1"
       shift
+      ;;
+    --install)
+      shift
+      install
+      exit $?
       ;;
     *)
       break
